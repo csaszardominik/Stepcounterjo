@@ -36,3 +36,13 @@ p{
 .logo{
     font-size: 400%;
 }
+
+.themeSwitch{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.hide{
+    display: none;
+}
