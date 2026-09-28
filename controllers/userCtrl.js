@@ -108,28 +108,54 @@ function setMenuItems(param){
     let adminMenu = document.querySelector('#adminMenu');
     switch(param){
         case 'admin' : {
-            baseMenu.classList.add('hide');
-            userMenu.classList.add('hide');
-            adminMenu.classList.remove('hide');
+            // baseMenu.classList.add('hide');
+            // userMenu.classList.add('hide');
+            // adminMenu.classList.remove('hide');
             break;
         }
         case 'user' : {
-            baseMenu.classList.add('hide');
-            adminMenu.classList.add('hide');
-            userMenu.classList.remove('hide');
+            // baseMenu.classList.add('hide');
+            // adminMenu.classList.add('hide');
+            // userMenu.classList.remove('hide');
             break;
         }
         default : {
-            userMenu.classList.add('hide');
-            adminMenu.classList.add('hide');
-            baseMenu.classList.remove('hide');
+            // userMenu.classList.add('hide');
+            // adminMenu.classList.add('hide');
+            // baseMenu.classList.remove('hide');
             break;
         }
     }
 }
 
 async function updateProfile(){
-    // hf
+    let username = document.querySelector('#username');
+    let email = document.querySelector('#email');
+
+    let data = {
+        username : username.value,
+        email : email.value
+    }
+
+    let uid = loadUser() ? loadUser().ID : 0;
+
+    const response = await fetch(`http://localhost:3000/users/${uid}/profile`, {
+        method: 'POST',
+        headers: {
+            "Content-Type" : "Application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    let res = await response.json();
+
+    if(response.status != 200){
+        showMessage('danger', 'ERROR', res.error);
+    } else{
+        showMessage('success', 'ok', res.message);
+        username.value = '';
+        email.value = '';
+    }
 }
 
 async function updatePassword(){
