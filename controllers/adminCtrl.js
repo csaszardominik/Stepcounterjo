@@ -1,4 +1,6 @@
 async function getAllUsers(req, res) {
+
+    let luid = loadUser() ? loadUser().ID : 0;
     const response = await fetch('http://localhost:3000/admin/users',
         {
             method:'POST',
@@ -6,7 +8,7 @@ async function getAllUsers(req, res) {
             {
                 "Content-Type":"application/json"
             },
-            body : JSON.stringify({ luid: 1 }),
+            body : JSON.stringify({ luid }),
         });
        
      

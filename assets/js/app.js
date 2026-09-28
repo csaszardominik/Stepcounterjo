@@ -53,3 +53,5 @@ function loadTheme(){
 navigate('views/users/home');
 
 loadTheme();
+
+loginCheck();
