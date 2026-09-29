@@ -8,9 +8,17 @@ async function navigate(page) {
     contentBox.innerHTML = await (await fetch(`${page}.html`)).text();
 
      switch(page){
-         case 'views/admin/users' : {
-             getAllUsers();
-            //  break;
+        case 'views/admin/users' : {
+            getAllUsers();
+            break;
+         }
+        case 'views/admin/users' : {
+            getUserData();
+            break;
+         }
+        case 'views/admin/dashboard' : {
+            getStatistics();
+            break;
          }
      }
 }

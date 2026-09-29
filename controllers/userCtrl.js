@@ -108,39 +108,40 @@ function setMenuItems(param){
     let adminMenu = document.querySelector('#adminMenu');
     switch(param){
         case 'admin' : {
-            // baseMenu.classList.add('hide');
-            // userMenu.classList.add('hide');
-            // adminMenu.classList.remove('hide');
+            baseMenu.classList.add('hide');
+            userMenu.classList.add('hide');
+            adminMenu.classList.remove('hide');
             break;
         }
         case 'user' : {
-            // baseMenu.classList.add('hide');
-            // adminMenu.classList.add('hide');
-            // userMenu.classList.remove('hide');
+            baseMenu.classList.add('hide');
+            adminMenu.classList.add('hide');
+            userMenu.classList.remove('hide');
             break;
         }
         default : {
-            // userMenu.classList.add('hide');
-            // adminMenu.classList.add('hide');
-            // baseMenu.classList.remove('hide');
+            userMenu.classList.add('hide');
+            adminMenu.classList.add('hide');
+            baseMenu.classList.remove('hide');
             break;
         }
     }
 }
 
 async function updateProfile(){
-    let username = document.querySelector('#username');
+    let name = document.querySelector('#name');
     let email = document.querySelector('#email');
 
+    let loggedUser = loadUser();
+
     let data = {
-        username : username.value,
-        email : email.value
+        username : name.value,
+        email : email.value,
+        luid: user.ID
     }
 
-    let uid = loadUser() ? loadUser().ID : 0;
-
-    const response = await fetch(`http://localhost:3000/users/${uid}/profile`, {
-        method: 'POST',
+    const response = await fetch(`http://localhost:3000/users/${loggedUser.ID}`, {
+        method: 'PATCH',
         headers: {
             "Content-Type" : "Application/json"
         },
@@ -153,8 +154,13 @@ async function updateProfile(){
         showMessage('danger', 'ERROR', res.error);
     } else{
         showMessage('success', 'ok', res.message);
-        username.value = '';
-        email.value = '';
+        let user = {
+            ID: loggedUser.ID,
+            name: name.value,
+            email: email.value,
+            role: loggedUser.role
+        }
+        storeUser(user);
     }
 }
 
@@ -189,4 +195,12 @@ async function updatePassword(){
         newpass.value = '';
         confirm.value = '';
     }
+}
+
+function getUserData(){
+
+    let user = loadUser();
+    
+    document.querySelector('#name').value = user.name;
+    document.querySelector('#email').value = user.email;
 }
