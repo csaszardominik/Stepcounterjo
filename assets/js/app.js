@@ -20,6 +20,11 @@ async function navigate(page) {
             getStatistics();
             break;
          }
+
+        case 'views/users/steps' : {
+         getUserSteps();
+         break;
+        }
      }
 }
 lightModeBtn.addEventListener('click', () =>{
