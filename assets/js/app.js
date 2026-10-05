@@ -25,8 +25,13 @@ async function navigate(page) {
          getUserSteps();
          break;
         }
+        case 'views/users/steps' :{
+            getUserSteps();
+            break;
+        }
      }
 }
+
 lightModeBtn.addEventListener('click', () =>{
     let theme = 'ligth';
     setTheme(theme);

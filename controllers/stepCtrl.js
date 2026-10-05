@@ -1,18 +1,18 @@
-async function getUserSteps(req, res) {
+async function getUserSteps() {
 
     let uid = loadUser() ? loadUser().ID : 0;
 
     const response = await fetch(`http://localhost:3000/steps/${uid}`);
-
+    
     if (response.status !== 200) {
         const res = await response.json();
         showMessage('danger', 'ERROR', res.error);
         return;
     }
 
-    const steps = await response.json();
-    addTableRowSteps(steps);
-
+    const result = await response.json();
+    addTableRowSteps(result);
+    initChart(result);
 }
 
 function addTableRowSteps(steps) {
@@ -92,29 +92,65 @@ function addTableRowSteps(steps) {
 }
 
 async function stepDelete(index) {
-    let uid = loadUser() ? loadUser().ID : 0;
-    let stepID = step.ID;
+    // let uid = loadUser() ? loadUser().ID : 0;
+    // let stepID = step.ID;
 
-    const response = await fetch(`http://localhost:3000/steps/${stepID}`,
-        {
-            method:'DELETE',
-            headers:
-            {
-                "Content-Type":"application/json"
-            },
-            body : JSON.stringify({
-                luid : luid
-            }),
-        });
-       
-     
-    const res = await response.json()
+    // const response = await fetch(`http://localhost:3000/steps/${stepID}`,
+    //     {
+    //         method: 'DELETE',
+    //         headers:
+    //         {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify({
+    //             luid: luid
+    //         }),
+    //     });
 
-    if(response.status != 200)
-        {
-        showMessage('danger','ERROR', res.error);
+
+    // const res = await response.json()
+
+    // if (response.status != 200) {
+    //     showMessage('danger', 'ERROR', res.error);
+    // }
+    // else {
+    //     showMessage('success', 'OK', res.message);
+    // }
+}
+
+function initChart(results) {
+
+    console.log('initChart', results);
+    let labels = [];
+    let datas = [];
+
+    results.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    results.forEach((results) => {
+        labels.push(moment(results.date).format('YYYY-MM-DD'));
+        datas.push(results.step_count);
+    });
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 2,
+                pointStyle: 'circle',
+                pointRadius: 10,
+                pointMoverRadius: 15
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
-    else{
-        showMessage('success', 'OK', res.message);
-        }
+    });
 }
