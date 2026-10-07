@@ -3,7 +3,7 @@ async function getUserSteps() {
     let uid = loadUser() ? loadUser().ID : 0;
 
     const response = await fetch(`http://localhost:3000/steps/${uid}`);
-    
+
     if (response.status !== 200) {
         const res = await response.json();
         showMessage('danger', 'ERROR', res.error);
@@ -13,6 +13,7 @@ async function getUserSteps() {
     const result = await response.json();
     addTableRowSteps(result);
     initChart(result);
+    initCalendar(result);
 }
 
 function addTableRowSteps(steps) {
@@ -135,14 +136,15 @@ function initChart(results) {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: labels,
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                label: '# of Steps',
+                data: datas,
                 borderWidth: 2,
                 pointStyle: 'circle',
                 pointRadius: 10,
-                pointMoverRadius: 15
+                pointMoverRadius: 15,
+                borderDash: [5, 5],
             }]
         },
         options: {
@@ -153,4 +155,37 @@ function initChart(results) {
             }
         }
     });
+}
+
+function initCalendar(results) {
+    var calendarEl = document.getElementById('calendar');
+
+    colorScheme = localStorage.getItem('SCT') || 'light';
+
+    let myEvents = results.map((result) => {
+        return {
+            title: result.step_count + ' steps',
+            start: result.date,
+        }
+    });
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        colorScheme: colorScheme,
+        initialDate: new Date(),
+        initialView: 'dayGridMonth',
+        nowIndicator: true,
+        headerToolbar: {
+            left: 'prevYear,prev,next,nextYear today',
+            center: 'title',
+            right: 'multiMonthYear,dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        navLinks: true, // can click day/week names to navigate views
+        editable: false,
+        selectable: false,
+        selectMirror: true,
+        dayMaxEvents: true, // allow "more" link when too many events
+        events: myEvents,
+    });
+
+    calendar.render();
 }
